@@ -151,7 +151,7 @@ class DocumentController {
                 return res.status(400).send({ status: 400, success: false, message: "Failed to Change Document Ownership", error: transfer?.error })
             }
             const { transactionHash } = transfer?.data;
-            findhistory.fundHold_hash = transactionHash;
+            findhistory.transfer_fundHash = transactionHash;
             await findhistory.save();
 
             return res.status(200).json({
@@ -217,45 +217,6 @@ class DocumentController {
         } catch (error) {
             console.log("Error @ changeDocumentOwnerShip : ", error)
             return res.status(400).send({ status: 400, success: false, message: "Failed to Change Document Ownership", error: error })
-        }
-    }
-
-    async approveHoldFund(req, res) {
-        try {
-
-            const { document_id } = req.body;
-
-            const findDoc = await DocumentModel.findOne({ _id: document_id }).populate("user_id");
-            if (!findDoc) {
-                return res.status(400).send({ status: 400, success: false, message: "Document Not Found" })
-            }
-
-            const approve = await approveFundHold(req.body)
-            if (!approve.success) {
-                return res.status(400).send({ status: 400, success: false, message: "Fund Hold Not Approved", error: approve.error })
-            }
-
-            const { transaction_hash } = approve?.data;
-
-            const createHistory = new TransactionHistory({
-                fromUser: findDoc?.user_id?._id,
-                toUser: req.user._id,
-                document_id: findDoc?._id,
-                amount: findDoc?.price,
-                fundHold_hash: transaction_hash,
-                fromUserStatus: "PENDING",
-                toUserStatus: "REQUESTED",
-            })
-            await createHistory.save();
-            findDoc.is_transfer_waiting = true;
-            await findDoc.save();
-            EmitData.sendData('refresh_notification', findDoc?.user_id?._ids, createHistory);
-            EmitData.sendData('refresh_notification', req.user._id, createHistory);
-            return ({ success: true, message: "Buyer Fund Hold Approved Successfully", data: findDoc })
-
-        } catch (error) {
-            console.log("Error @ approveHoldFund : ", error)
-            return ({ success: false, message: "Failed to Approve Hold Fund", error: error })
         }
     }
 

@@ -1,4 +1,4 @@
-const ERC_20_ABI = [
+const ESCROW_ABI = [
 	{
 		"inputs": [],
 		"stateMutability": "nonpayable",
@@ -357,4 +357,4 @@ const ERC_20_ABI = [
 	}
 ]
 
-module.exports = ERC_20_ABI;
+module.exports = ESCROW_ABI;

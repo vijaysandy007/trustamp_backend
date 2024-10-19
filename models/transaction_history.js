@@ -12,9 +12,6 @@ const transactionSchema = new mongoose.Schema({
     fromUserStatus: {
         type: String
     },
-    fundHold_hash: {
-        type: String
-    },
 
     transfer_fundHash: {
         type: String

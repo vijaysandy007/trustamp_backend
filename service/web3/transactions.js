@@ -1,6 +1,6 @@
 const Web3 = require('web3');
 const web3 = new Web3(process.env.RPC_URL);
-const ERC_20_ABI = require("./abi/ERC_20_ABI");
+const ESCROW_ABI = require("./abi/ESCROW_ABI");
 const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS;
 const LINK_TOKEN_ADDRESS = process.env.LINK_TOKEN_ADDRESS;
 const ESCROW_WALLET_ADDRESS = process.env.WALLET_ADDRESS;
@@ -11,7 +11,7 @@ const confirmDelivery = async (document) => {
 
         const { orderId } = document;
 
-        const documentContract = new web3.eth.Contract(ERC_20_ABI, CONTRACT_ADDRESS);
+        const documentContract = new web3.eth.Contract(ESCROW_ABI, CONTRACT_ADDRESS);
         const encodeABI = await documentContract.methods.confirmDelivery(
             orderId,
             LINK_TOKEN_ADDRESS
