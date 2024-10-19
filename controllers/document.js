@@ -132,6 +132,38 @@ class DocumentController {
         }
     }
 
+    async approveHoldFund(req, res) {
+        try {
+
+            const { document_id,transaction_hash } = req.body;
+
+            const findDoc = await DocumentModel.findOne({ _id: document_id }).populate("user_id");
+            if (!findDoc) {
+                return res.status(400).send({ status: 400, success: false, message: "Document Not Found" })
+            }
+
+            const createHistory = new TransactionHistory({
+                fromUser: findDoc?.user_id?._id,
+                toUser: req.user._id,
+                document_id: findDoc?._id,
+                amount: findDoc?.price,
+                fundHold_hash: transaction_hash,
+                fromUserStatus: "PENDING",
+                toUserStatus: "REQUESTED",
+            })
+            await createHistory.save();
+            findDoc.is_transfer_waiting = true;
+            await findDoc.save();
+            EmitData.sendData('refresh_notification', findDoc?.user_id?._ids, createHistory);
+            EmitData.sendData('refresh_notification', req.user._id, createHistory);
+            return ({ success: true, message: "Buyer Fund Hold Approved Successfully", data: findDoc })
+
+        } catch (error) {
+            console.log("Error @ approveHoldFund : ", error)
+            return ({ success: false, message: "Failed to Approve Hold Fund", error: error })
+        }
+    }
+
     async transferFund(req, res) {
         try {
             const { transaction_id } = req.body;

@@ -11,6 +11,7 @@ router.post("/user/listDocument", auth, asyncHandler(docController.listDocument)
 router.post("/user/unlistDocument", auth, asyncHandler(docController.unlistDocument));
 router.post("/user/change/document/ownership", auth, asyncHandler(docController.changeDocumentOwnerShip));
 router.post("/user/getTransactionHistory", auth, asyncHandler(docController.getTransactionHistory));
+router.post("/user/approveHoldFund", auth, asyncHandler(docController.approveHoldFund));
 router.post("/user/transferFund", auth, asyncHandler(docController.transferFund));
 
 module.exports = router;
