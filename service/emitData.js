@@ -1,8 +1,6 @@
 const { getSocketId } = require("./socketFunctions");
 const { getSocket } = require("./socket");
 const Notification = require('../models/notification')
-const User = require('../models/user')
-const { sendMail } = require('../utils/accountMail')
 
 const sendData = async (key, userId, data) => {
     const redisData = await getSocketId(userId, "USER");
@@ -58,56 +56,56 @@ const mqforNotification = async (ch) => {
     })
 }
 
-const mqforCustomNotificationMail = async (ch) => {
-    const q = 'custom_notification_mail'
-    await (await ch).assertQueue(q);
-    await (await ch).consume(q, async (msg) => {
-        if (msg !== null) {
-            const qm = JSON.parse(msg.content.toString());
+// const mqforCustomNotificationMail = async (ch) => {
+//     const q = 'custom_notification_mail'
+//     await (await ch).assertQueue(q);
+//     await (await ch).consume(q, async (msg) => {
+//         if (msg !== null) {
+//             const qm = JSON.parse(msg.content.toString());
 
-            const templateId = process.env.CUSTOM_NOTIFICATION_MAIL_TEMPLATE_ID
-            const user = await User.findOne({ email: qm.email })
-            const replacements = {
-                username: user.name,
-                title: qm.data.title,
-                message: qm.data.message,
-            };
-            await sendMail(qm.email, templateId, replacements);
+//             const templateId = process.env.CUSTOM_NOTIFICATION_MAIL_TEMPLATE_ID
+//             const user = await User.findOne({ email: qm.email })
+//             const replacements = {
+//                 username: user.name,
+//                 title: qm.data.title,
+//                 message: qm.data.message,
+//             };
+//             await sendMail(qm.email, templateId, replacements);
 
-        }
-    }, {
-        noAck: true
-    })
-}
+//         }
+//     }, {
+//         noAck: true
+//     })
+// }
 
-const sendCustomNotification = async (input) => {
-    var q = 'notification_connect';
-    switch (input.data.type) {
-        case 'PUSH':
-            input.key = "new_notification";
-            await new Notification({
-                notificationId: input.notificationId,
-                user_id: input.userId,
-                message: input.data.message,
-                title: input.data.title,
-                type: input.data.notificationType
-            }).save();
-            let data = await Notification.find({ user_id: input.userId, read: false });
-            await sendData(input.key, input.userId, data);
-            break;
-        case 'MAIL':
-            q = 'custom_notification_mail'
-            const templateId = process.env.CUSTOM_NOTIFICATION_MAIL_TEMPLATE_ID
-            const user = await User.findOne({ email: input.email })
-            const replacements = {
-                username: user.name,
-                title: input.data.title,
-                message: input.data.message,
-            };
-            await sendMail(input.email, templateId, replacements);
-            break;
-    }
-}
+// const sendCustomNotification = async (input) => {
+//     var q = 'notification_connect';
+//     switch (input.data.type) {
+//         case 'PUSH':
+//             input.key = "new_notification";
+//             await new Notification({
+//                 notificationId: input.notificationId,
+//                 user_id: input.userId,
+//                 message: input.data.message,
+//                 title: input.data.title,
+//                 type: input.data.notificationType
+//             }).save();
+//             let data = await Notification.find({ user_id: input.userId, read: false });
+//             await sendData(input.key, input.userId, data);
+//             break;
+//         case 'MAIL':
+//             q = 'custom_notification_mail'
+//             const templateId = process.env.CUSTOM_NOTIFICATION_MAIL_TEMPLATE_ID
+//             const user = await User.findOne({ email: input.email })
+//             const replacements = {
+//                 username: user.name,
+//                 title: input.data.title,
+//                 message: input.data.message,
+//             };
+//             await sendMail(input.email, templateId, replacements);
+//             break;
+//     }
+// }
 
 const CurrentPriceSocket = async (key, data) => {
     const io = await getSocket();
@@ -119,7 +117,5 @@ module.exports = {
     newsFeedSocket,
     CurrentPriceSocket,
     mqforSocket,
-    mqforNotification,
-    mqforCustomNotificationMail,
-    sendCustomNotification
+    mqforNotification
 };
