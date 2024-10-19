@@ -26,10 +26,13 @@ const confirmDelivery = async (document) => {
 
         let signTransactionParam = {
             from: ESCROW_WALLET_ADDRESS,
+            to: CONTRACT_ADDRESS,
             data: encodeABI,
             gasPrice: gasPrice ? gasPrice : "3000000000",
             gas: (+estimateGas).toString(),
         }
+
+        console.log("signTransactionParam=>>>>>>>>>", signTransactionParam)
 
         let createTransaction = await web3.eth.accounts.signTransaction(signTransactionParam, PRIVATE_KEY);
 
