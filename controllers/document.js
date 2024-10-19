@@ -30,7 +30,7 @@ class DocumentController {
             await new Notification({
                 user_id: req.user._id,
                 message: `${createDoc.documet_name} Document created Successfully`,
-                title: "Unlisted document"
+                title: `Document created Successfully`
             }).save();
 
             return res.status(200).send({ success: true, message: "Document Created Successfully", data: createDoc })
@@ -92,7 +92,7 @@ class DocumentController {
             await new Notification({
                 user_id: req.user._id,
                 message: `${document.documet_name} Document listed Successfully`,
-                title: "Unlisted document"
+                title: "listed document"
             }).save();
 
             return res.status(200).send({ success: true, message: "Document Listed Successfully", data: document });
@@ -234,13 +234,13 @@ class DocumentController {
             await new Notification({
                 user_id: findhistory.toUser._id,
                 message: `${findDoc.documet_name} Document succcessfully reacived from ${findhistory?.fromUser?.walletAddress}`,
-                title: "Ownership Changed document"
+                title: `${findDoc.documet_name} Document succcessfully reacived`
             }).save();
 
             await new Notification({
                 user_id: findhistory?.fromUser?._id,
                 message: `${findDoc.documet_name} Document successfully transferred to ${findhistory?.toUser?.walletAddress}`,
-                title: "Ownership Changed document"
+                title: `${findDoc.documet_name} Document successfully transferred`
             }).save();
 
             EmitData.sendData('refresh_notification', req.user._id, findhistory);
