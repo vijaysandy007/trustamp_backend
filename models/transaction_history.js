@@ -38,10 +38,6 @@ const transactionSchema = new mongoose.Schema({
     amount: {
         type: Number,
         required: [true, 'Amount is required']
-    },
-    status: {
-        type: String,
-        required: [true, 'Status is required']
     }
 
 }, { timestamps: true });
