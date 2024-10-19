@@ -245,7 +245,7 @@ class DocumentController {
 
             EmitData.sendData('refresh_notification', req.user._id, findhistory);
             EmitData.sendData('refresh_notification', findhistory.toUser._id, findhistory);
-            res.status(200).send({ success: true, message: "Document Ownership Changed Successfully", data: findhistory })
+           return res.status(200).send({ success: true, message: "Document Ownership Changed Successfully", data: findhistory })
 
         } catch (error) {
             console.log("Error @ changeDocumentOwnerShip : ", error)
