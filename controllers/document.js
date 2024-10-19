@@ -156,11 +156,11 @@ class DocumentController {
             await findDoc.save();
             EmitData.sendData('refresh_notification', findDoc?.user_id?._ids, createHistory);
             EmitData.sendData('refresh_notification', req.user._id, createHistory);
-            return ({ success: true, message: "Buyer Fund Hold Approved Successfully", data: findDoc })
+            return res.status(200).send({ success: true, message: "Buyer Fund Hold Approved Successfully", data: findDoc })
 
         } catch (error) {
             console.log("Error @ approveHoldFund : ", error)
-            return ({ success: false, message: "Failed to Approve Hold Fund", error: error })
+            return res.status(400).send({ success: false, message: "Failed to Approve Hold Fund", error: error })
         }
     }
 
