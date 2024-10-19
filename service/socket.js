@@ -28,8 +28,6 @@ const startSocket = (app) => {
     io.on("connection", async function(socket, next) {
         try {
             console.log("A user connected", socket.id);
-            const {connectLynxWss} = require('./bot/grid/lynx/lynx_websocket')
-            connectLynxWss(socket);
             let notific = await Notification.find({ user_id: socket.userId, read: false });
             if (notific) {
                 io.sockets.to(socket.id).emit("new_notification", notific);
