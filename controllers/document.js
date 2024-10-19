@@ -44,7 +44,7 @@ class DocumentController {
         try {
             const { limit, page } = req.body;
             const skip = (page - 1) * limit
-            const documents = await DocumentModel.find({ user_id: req.user._id }).skip(skip).limit(limit)
+            const documents = await DocumentModel.find({ user_id: req.user._id }).skip(skip).limit(limit).populate("user_id", "-signature")
             let totalCount = await DocumentModel.countDocuments({ user_id: req.user._id })
             return res.status(200).send({ success: true, message: "Documents Fetch Successfully", count: totalCount, data: documents })
         } catch (error) {
