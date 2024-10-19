@@ -82,7 +82,7 @@ class DocumentController {
             }
             if (document.list_transactionhash) return res.status(400).send({ success: false, message: "Document already listed" })
 
-            if (!list?.success) return res.status(400).json({ success: false, message: list?.message });
+            // if (!list?.success) return res.status(400).json({ success: false, message: list?.message });
             document.isListed = true;
             document.list_transactionhash = transactionHash;
             document.orderId = orderId;
